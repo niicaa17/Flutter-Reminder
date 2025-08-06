@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -14,6 +15,9 @@ class AuthRepository {
 
       // Ganti key ini sesuai dengan struktur respons backend kamu
       final token = data['token'] ?? data['access_token'];
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
 
       if (token != null) {
         ApiService.setToken(token);
