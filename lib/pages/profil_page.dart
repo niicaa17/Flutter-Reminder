@@ -8,6 +8,8 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  final Color mainBlue = const Color(0xFF1976D2);
+  final Color lightBlue = const Color(0xFF90CAF9);
   String? userName = "Loading...";
 
   @override
@@ -37,20 +39,32 @@ class _ProfilPageState extends State<ProfilPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Konfirmasi Logout"),
-          content: Text("Yakin mau logout?"),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          title: Row(
+            children: [
+              Icon(Icons.logout, color: mainBlue),
+              const SizedBox(width: 8),
+              const Text("Konfirmasi Logout"),
+            ],
+          ),
+          content: const Text("Yakin mau logout?"),
           actions: [
             TextButton(
-              child: Text("Batal"),
+              child: const Text("Batal"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: mainBlue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              child: const Text("Logout"),
               onPressed: () {
                 Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text("Logout"),
-              onPressed: () {
-                Navigator.of(context).pop(); // tutup dialog
-                _logout(context); // eksekusi logout
+                _logout(context);
               },
             ),
           ],
@@ -61,45 +75,62 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _ubahTargetMinum(BuildContext context) {
     final _controller = TextEditingController();
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Ubah Target Harian"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: [
+            Icon(Icons.flag, color: mainBlue),
+            const SizedBox(width: 8),
+            const Text("Ubah Target Harian"),
+          ],
+        ),
         content: TextField(
           controller: _controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(hintText: "Masukkan target (ml)"),
+          decoration: InputDecoration(
+            hintText: "Masukkan target (ml)",
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: mainBlue, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
         actions: [
           TextButton(
-            child: Text("Batal"),
+            child: const Text("Batal"),
             onPressed: () => Navigator.pop(context),
           ),
-          TextButton(
-            child: Text("Simpan"),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mainBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text("Simpan"),
             onPressed: () async {
               final newTarget = int.tryParse(_controller.text);
               if (newTarget == null || newTarget <= 0) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Input tidak valid")),
+                  const SnackBar(content: Text("Input tidak valid")),
                 );
                 return;
               }
-
-              // Tutup dialog
-
               try {
                 await WaterLogRepository().updateDailyTarget(newTarget);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Target berhasil diubah")),
+                  const SnackBar(content: Text("Target berhasil diubah")),
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Gagal: ${e.toString()}")),
+                  SnackBar(content: Text("Gagal: " + e.toString())),
                 );
               }
-
               Navigator.pop(context);
             },
           ),
@@ -110,29 +141,76 @@ class _ProfilPageState extends State<ProfilPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Icon(Icons.person, size: 100),
-          SizedBox(height: 16),
-          Text(userName ?? "Nama Pengguna", style: TextStyle(fontSize: 20)),
-          SizedBox(height: 32),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("Ubah Target Minum Harian"),
-            onTap: () {
-              _ubahTargetMinum(context);
-            },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [mainBlue, lightBlue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Card(
+                elevation: 8,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: mainBlue.withOpacity(0.1),
+                        child: const Icon(Icons.person,
+                            size: 54, color: Color(0xFF1976D2)),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(userName ?? "Nama Pengguna",
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1976D2))),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Card(
+                color: Colors.white.withOpacity(0.95),
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18)),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.edit, color: mainBlue),
+                      title: const Text("Ubah Target Minum Harian",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onTap: () {
+                        _ubahTargetMinum(context);
+                      },
+                    ),
+                    const Divider(height: 0),
+                    ListTile(
+                      leading: Icon(Icons.logout, color: Colors.redAccent),
+                      title: const Text("Logout",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onTap: () {
+                        _showLogoutConfirmation(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text("Logout"),
-            onTap: () {
-              _showLogoutConfirmation(context);
-            },
-          )
-        ],
+        ),
       ),
     );
   }
