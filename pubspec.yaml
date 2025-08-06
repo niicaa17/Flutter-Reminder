@@ -12,11 +12,9 @@ dependencies:
   http: ^0.13.6
   flutter_dotenv: ^5.1.0  
   flutter_secure_storage: ^9.0.0
-  http: ^1.2.1
   image_picker: ^1.1.0
   path: ^1.8.3
   carousel_slider: ^5.0.0
-  cached_network_image: ^3.4.1
   
 dev_dependencies:
   flutter_test:
