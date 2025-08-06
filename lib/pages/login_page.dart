@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../repositories/auth_repository.dart';
+import '../pages/main_wrapper.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,9 +28,13 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text.trim(),
       );
 
+      print('Login berhasil: $result');
+
       // TODO: Arahkan ke halaman utama
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login sukses!')),
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainWrapper()),
       );
     } catch (e) {
       setState(() {

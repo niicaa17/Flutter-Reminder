@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static final String baseUrl =
-      dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8000/api';
+  static final String baseUrl = 'http://localhost:8000/api/';
   static String? _token;
 
   static void setToken(String token) {
