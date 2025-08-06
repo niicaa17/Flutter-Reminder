@@ -85,4 +85,28 @@ class WaterLogRepository {
       throw Exception('Gagal menambahkan log');
     }
   }
+
+  Future<void> updateDailyTarget(int target) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.put(
+      Uri.parse('$baseUrl/profile/daily-target'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'daily_target': target,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Target berhasil diubah: ${data['daily_target']}');
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Gagal mengubah target');
+    }
+  }
 }

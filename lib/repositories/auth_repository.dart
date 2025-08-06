@@ -31,4 +31,22 @@ class AuthRepository {
       throw Exception(error['message'] ?? 'Login gagal');
     }
   }
+
+  Future<Map<String, dynamic>> register(
+      String name, String email, String password) async {
+    final response = await ApiService.post('/register', {
+      'name': name,
+      'email': email,
+      'password': password,
+    });
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Response dari API (register): $data'); // Debug log
+      return data;
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Registrasi gagal');
+    }
+  }
 }

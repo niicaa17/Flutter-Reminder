@@ -51,37 +51,51 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text('Login',
-                    style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 16),
-                if (errorMessage != null)
-                  Text(errorMessage!,
-                      style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 16),
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: login,
-                        child: const Text('Login'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text('Login',
+                          style: Theme.of(context).textTheme.headlineMedium),
+                      const SizedBox(height: 24),
+                      TextField(
+                        controller: emailController,
+                        decoration: const InputDecoration(labelText: 'Email'),
                       ),
-              ],
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: passwordController,
+                        decoration:
+                            const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
+                      if (errorMessage != null)
+                        Text(errorMessage!,
+                            style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 16),
+                      isLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: login,
+                              child: const Text('Login'),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/register');
+              },
+              child: const Text('Belum punya akun? Daftar di sini'),
+            ),
+          ],
         ),
       ),
     );

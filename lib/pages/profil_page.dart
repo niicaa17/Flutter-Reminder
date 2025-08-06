@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '/repositories/water_log_repository.dart';
 
 class ProfilPage extends StatefulWidget {
   @override
@@ -58,6 +59,55 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
+  void _ubahTargetMinum(BuildContext context) {
+    final _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Ubah Target Harian"),
+        content: TextField(
+          controller: _controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(hintText: "Masukkan target (ml)"),
+        ),
+        actions: [
+          TextButton(
+            child: Text("Batal"),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text("Simpan"),
+            onPressed: () async {
+              final newTarget = int.tryParse(_controller.text);
+              if (newTarget == null || newTarget <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Input tidak valid")),
+                );
+                return;
+              }
+
+              // Tutup dialog
+
+              try {
+                await WaterLogRepository().updateDailyTarget(newTarget);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Target berhasil diubah")),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Gagal: ${e.toString()}")),
+                );
+              }
+
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -72,7 +122,7 @@ class _ProfilPageState extends State<ProfilPage> {
             leading: Icon(Icons.edit),
             title: Text("Ubah Target Minum Harian"),
             onTap: () {
-              // nanti trigger dialog atau page ubah target
+              _ubahTargetMinum(context);
             },
           ),
           ListTile(

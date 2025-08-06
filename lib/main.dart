@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pages/main_wrapper.dart';
+import '/pages/main_wrapper.dart';
 import 'pages/login_page.dart';
+import 'pages/register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
         '/home': (context) =>
             const MainWrapper(), // ganti sesuai nama halaman utama kamu
       },
