@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages/main_wrapper.dart';
 import 'pages/login_page.dart';
 
 void main() {
@@ -18,7 +19,12 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) =>
+            const MainWrapper(), // ganti sesuai nama halaman utama kamu
+      },
     );
   }
 }

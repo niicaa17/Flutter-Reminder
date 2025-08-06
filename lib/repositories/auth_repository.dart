@@ -15,8 +15,9 @@ class AuthRepository {
 
       // Ganti key ini sesuai dengan struktur respons backend kamu
       final token = data['token'] ?? data['access_token'];
-
+      final name = data['name']; // ambil nama user
       final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('name', name); // simpan nama
       await prefs.setString('token', token);
 
       if (token != null) {
