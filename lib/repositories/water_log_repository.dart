@@ -109,4 +109,42 @@ class WaterLogRepository {
       throw Exception(error['message'] ?? 'Gagal mengubah target');
     }
   }
+
+  //tambahin function untuk delete water log
+  Future<void> deleteWaterLog(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/waterlogs/delete/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Gagal menghapus water log');
+    }
+  }
+
+  // tambahkan function untuk edit water log
+  Future<void> editWaterLog(int id, int amount) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/waterlogs/edit/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'amount': amount}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Gagal mengedit water log');
+    }
+  }
 }
