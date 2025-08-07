@@ -35,4 +35,26 @@ class ApiService {
       },
     );
   }
+
+  static Future<http.Response> put(String endpoint, Map<String, dynamic> data) {
+    return http.put(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        if (_token != null) 'Authorization': 'Bearer $_token',
+      },
+      body: jsonEncode(data),
+    );
+  }
+
+  static Future<http.Response> delete(String endpoint) {
+    return http.delete(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {
+        'Accept': 'application/json',
+        if (_token != null) 'Authorization': 'Bearer $_token',
+      },
+    );
+  }
 }

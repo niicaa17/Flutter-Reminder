@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/repositories/water_log_repository.dart';
+import '../repositories/profile_repository.dart';
 
 class ProfilPage extends StatefulWidget {
   @override
@@ -139,6 +140,235 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
+  void _ubahNama(BuildContext context) {
+    final _controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: [
+            Icon(Icons.person_outline, color: mainBlue),
+            const SizedBox(width: 8),
+            const Text("Ubah Nama"),
+          ],
+        ),
+        content: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: "Nama baru",
+            hintText: "Masukkan nama baru",
+            icon: Icon(Icons.person_outline, color: mainBlue),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: mainBlue, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mainBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () async {
+              final name = _controller.text.trim();
+              if (name.isEmpty) return;
+              try {
+                await ProfileRepository().editName(name);
+                await _loadUserName();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Nama berhasil diubah")),
+                );
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Gagal: ${e.toString()}")),
+                );
+              }
+            },
+            child: const Text("Simpan"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _ubahEmail(BuildContext context) {
+    final _controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: [
+            Icon(Icons.email_outlined, color: mainBlue),
+            const SizedBox(width: 8),
+            const Text("Ubah Email"),
+          ],
+        ),
+        content: TextField(
+          controller: _controller,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            labelText: "Email baru",
+            hintText: "Masukkan email baru",
+            icon: Icon(Icons.email_outlined, color: mainBlue),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: mainBlue, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mainBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () async {
+              final email = _controller.text.trim();
+              if (!email.contains('@')) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Format email tidak valid")),
+                );
+                return;
+              }
+              try {
+                await ProfileRepository().editEmail(email);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Email berhasil diubah")),
+                );
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Gagal: ${e.toString()}")),
+                );
+              }
+            },
+            child: const Text("Simpan"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _ubahPassword(BuildContext context) {
+    final currentController = TextEditingController();
+    final newController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: [
+            Icon(Icons.lock_outline, color: mainBlue),
+            const SizedBox(width: 8),
+            const Text("Ubah Password"),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: currentController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password saat ini",
+                hintText: "Masukkan password saat ini",
+                icon: Icon(Icons.lock_outline, color: mainBlue),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: mainBlue, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: newController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password baru",
+                hintText: "Masukkan password baru",
+                icon: Icon(Icons.lock, color: mainBlue),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: mainBlue, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mainBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () async {
+              final current = currentController.text;
+              final newPass = newController.text;
+
+              if (newPass.length < 6) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text("Password baru minimal 6 karakter")),
+                );
+                return;
+              }
+
+              try {
+                await ProfileRepository().editPassword(current, newPass);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Password berhasil diubah")),
+                );
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Gagal: ${e.toString()}")),
+                );
+              }
+            },
+            child: const Text("Simpan"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -195,6 +425,27 @@ class _ProfilPageState extends State<ProfilPage> {
                       onTap: () {
                         _ubahTargetMinum(context);
                       },
+                    ),
+                    const Divider(height: 0),
+                    ListTile(
+                      leading: Icon(Icons.person_outline, color: mainBlue),
+                      title: const Text("Ubah Nama",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onTap: () => _ubahNama(context),
+                    ),
+                    const Divider(height: 0),
+                    ListTile(
+                      leading: Icon(Icons.email_outlined, color: mainBlue),
+                      title: const Text("Ubah Email",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onTap: () => _ubahEmail(context),
+                    ),
+                    const Divider(height: 0),
+                    ListTile(
+                      leading: Icon(Icons.lock_outline, color: mainBlue),
+                      title: const Text("Ubah Password",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onTap: () => _ubahPassword(context),
                     ),
                     const Divider(height: 0),
                     ListTile(
